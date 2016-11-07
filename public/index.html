@@ -1,0 +1,134 @@
+<!DOCTYPE html >
+<html lang="en" ng-app="formValidation" >
+<head >
+	<title >Complex Form Validations</title >
+	<link href="css/bootstrap.min.css" rel="stylesheet" >
+	<link href="css/main.css" rel="stylesheet" >
+	<script src="lib/jquery.min.js"></script>
+	<script src="lib/underscore-1.4.4.min.js"></script>
+	<script src="lib/bootstrap.min.js"></script>
+	<script src="lib/angular/angular.js"></script>
+	<script src="lib/angular/angular-sanitize.js"></script>
+	<script src="js/formValidation-module.js"></script>
+	<script src="js/controllers/formValidation-controller.js"></script>
+	<script src="js/filters/phoneFormat-filter.js"></script>
+	<script src="js/directives/formatPhone-directive.js"></script>
+</head >
+
+<body >
+
+<nav class="navbar navbar-inverse navbar-fixed-top" >
+	<div class="container" >
+		<div class="navbar-header" >
+			<a class="navbar-brand"
+			   href="/" >Complex Form Validation
+			</a >
+		</div >
+	</div >
+</nav >
+
+<div class="container main-content" ng-controller="formValidationCtrl" >
+
+	<form ng-submit="myForm.$valid && submit()" name="myForm" novalidate="novalidate">
+		<div class="form-group" ng-class="{'has-error':!myForm.name.$valid && (!myForm.name.$pristine || myForm.$submitted), 'has-success': myForm.name.$valid && (!myForm.name.$pristine || myForm.$submitted)}">
+			<label for="name" >Name</label >
+			<input type="text"
+				   name="name"
+				   class="form-control"
+					ng-model="formModel.name"
+				   ng-pattern="/^[a-zA-Z]/"
+				   id="name"
+					required>
+			<span class="help-block" ng-show="myForm.name.$error.required && (!myForm.name.$pristine || myForm.$submitted)">Name Field is Required</span>
+			<span class="help-block" ng-show="myForm.name.$error.pattern && (!myForm.name.$pristine || myForm.$submitted)">The Name can you Alphabetic only</span>
+			<!--<pre>{{myForm.name | json}}</pre>-->
+		</div >
+
+		<div class="form-group"  ng-class="{'has-error':!myForm.email.$valid && (!myForm.email.$pristine || myForm.$submitted), 'has-success': myForm.email.$valid && (!myForm.email.$pristine || myForm.$submitted)}" >
+			<label for="email" >Email</label >
+			<input type="email"
+				   class="form-control"
+				   name="email"
+					ng-model="formModel.email"
+				   id="email"
+					required>
+			<span class="help-block" ng-show="myForm.email.$error.required && (!myForm.email.$pristine || myForm.$submitted)">Email Field is Required</span>
+			<span class="help-block" ng-show="myForm.email.$error.email && (!myForm.email.$pristine || myForm.$submitted)">The Email must contain @ symbol</span>
+		</div >
+
+		<div class="form-group"  ng-class="{'has-error':!myForm.username.$valid && (!myForm.username.$pristine || myForm.$submitted), 'has-success': myForm.username.$valid && (!myForm.username.$pristine || myForm.$submitted)}" >
+			<label for="username" >Username</label >
+			<input type="text"
+				   name="username"
+				   class="form-control"
+				   ng-model="formModel.username"
+				   id="username"
+				   ng-pattern="/^[a-zA-Z0-9]/"
+					required>
+			<span class="help-block" ng-show="myForm.username.$error.required && (!myForm.username.$pristine || myForm.$submitted)">Username Field is Required</span>
+			<span class="help-block" ng-show="myForm.username.$error.pattern  && (!myForm.username.$pristine || myForm.$submitted)">Special Characters are not allowed in username.</span>
+		</div >
+
+		<div class="form-group"  ng-class="{'has-error':!myForm.phonenumber.$valid && (!myForm.phonenumber.$pristine || myForm.$submitted), 'has-success': myForm.phonenumber.$valid && (!myForm.phonenumber.$pristine || myForm.$submitted)}" >
+			<label for="phonenumber" >Phone</label >
+			<input type="tel"
+				   name="phonenumber"
+				   phone-input class="form-control"
+				   placeholder="(xxx) xxx-xxxx"
+				   ng-model="formModel.phonenumber"
+					ng-pattern="/^(?!\((\d)\1\1\) \1{3}-\1{4})\(?(\d{3})\)?[ .-]?(\d{3})[ .-]?(\d{4})$/"
+				   id="phonenumber"
+				   required>
+			<span class="help-block" ng-show="myForm.phonenumber.$error.required && (!myForm.phonenumber.$pristine || myForm.$submitted)">Phone Number Field is Required</span>
+			<span class="help-block" ng-show="myForm.phonenumber.$error.pattern  && (!myForm.phonenumber.$pristine || myForm.$submitted)">Phone Number has to be Numeric and.</span>
+		</div >
+
+		<div class="form-group"  ng-class="{'has-error':!myForm.age.$valid && (!myForm.age.$pristine || myForm.$submitted), 'has-success': myForm.age.$valid && (!myForm.age.$pristine || myForm.$submitted)}" >
+			<label for="age" >Age</label >
+			<input type="text"
+				   name="age"
+				   ng-pattern="/^[0-9]/"
+				   class="form-control"
+				   ng-model="formModel.age"
+				   id="age"
+					required>
+			<span class="help-block" ng-show="myForm.age.$error.required && (!myForm.age.$pristine || myForm.$submitted)">Age Field is Required</span>
+			<span class="help-block" ng-show="myForm.age.$error.pattern && (!myForm.age.$pristine || myForm.$submitted)">Age should always be numeric</span>
+		</div >
+
+		<div class="form-group"  ng-class="{'has-error':!myForm.gender.$valid && (!myForm.gender.$pristine || myForm.$submitted), 'has-success': myForm.gender.$valid && (!myForm.gender.$pristine || myForm.$submitted)}" >
+			<label for="gender" >Gender</label >
+			<select name="gender"
+				   class="form-control"
+				   ng-model="formModel.gender"
+					ng-options="gender for gender in genders"
+				   id="gender"
+					required>
+				<option value="">Select Sex</option>
+				</select>
+			<span class="help-block" ng-show="myForm.gender.$error.required && (!myForm.gender.$pristine || myForm.$submitted)">Gender Field is Required</span>
+		</div >
+
+		<div class="form-group"  ng-class="{'has-error':!myForm.password.$valid && (!myForm.password.$pristine || myForm.$submitted), 'has-success': myForm.password.$valid && (!myForm.password.$pristine || myForm.$submitted)}" >
+			<label for="password" >Password</label >
+			<input type="password"
+				   name="password"
+				   class="form-control"
+					ng-model="formModel.password"
+				   id="password"
+					required>
+			<span class="help-block" ng-show="myForm.password.$error.required && (!myForm.password.$pristine || myForm.$submitted)">Password Field is Required</span>
+		</div >
+
+		<div class="form-group" >
+			<button class="btn btn-primary" type="submit">Register
+			</button >
+		</div >
+
+	</form >
+
+
+</div >
+
+</body >
+</html >
